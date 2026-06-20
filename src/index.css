@@ -1,10 +1,10 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Press+Start+2P&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Obitron:wght@500;700&family=Press+Start+2P&display=swap');
+@import "tailwindcss";
 
 @theme {
   --font-retro: "Press Start 2P", monospace;
-  --font-neon: "Obitron", sans-serif;
+  --font-neon: "Orbitron", sans-serif;
 
   --animate-fade-in: fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 

@@ -1,5 +1,4 @@
-const GRID_SiZE = 20;
-const SNAKE_SPEED = 120;
+import {GRID_SIZE, SNAKE_SPEED} from './constants.js';
 
 export function initGame(canvas, {onScoreChange, onGameOver}) {
     const ctx = canvas.getContext('2d');
@@ -69,7 +68,7 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
         // Calculate new head position
         const head = {
             x: snake[0].x + direction.x,
-            y: snake[0].x + direction.y
+            y: snake[0].y + direction.y
         };
 
         // (1) Collision check: Hits wall
