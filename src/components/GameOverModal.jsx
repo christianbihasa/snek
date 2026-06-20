@@ -15,7 +15,7 @@ export default function GameOverModal({ score, onRestart }) {
                 Final Score: <span className="text-cyan-400 font-bold">{score}</span>
             </p>
 
-            <button onClick={onRestart} className="font-neon w-full py-3 px-6 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold uppercase tracking-widest rounded-lg cursor-pointer transform active:scale-95 transition-all duration-150 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+            <button onPointerDown={onRestart} className="font-neon w-full py-3 px-6 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold uppercase tracking-widest rounded-lg cursor-pointer transform active:scale-95 transition-all duration-150 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
                 Retry
             </button>
         </div>

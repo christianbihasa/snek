@@ -9,7 +9,7 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
     let snake = [];
     let food = {x: 0, y: 0};
     let direction = {x: 1, y: 0};
-    let nextDirection = {x: 1, y: 0};
+    let inputQueue = [];
     let score = 0;
     let isRunning = false;
 
@@ -41,7 +41,7 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
             {x: 8, y: 10}
         ];
         direction = {x: 1, y: 0};
-        nextDirection = {x: 1, y: 0};
+        inputQueue = [];
         score = 0;
         onScoreChange(0);
         spawnFood();
@@ -56,6 +56,18 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
             case 'ArrowDown': case 's': case 'S': if(direction.y === 0) nextDirection = {x: 0, y: 1}; break;
             case 'ArrowLeft': case 'a': case 'A': if(direction.x === 0) nextDirection = {x: -1, y: 0}; break;
             case 'ArrowRight': case 'd': case 'D': if(direction.x === 0) nextDirection = {x: 1, y: 0}; break;
+            default: return;
+        }
+
+        // Determine next direction
+        const lastQueuedDirection = inputQueue.length > 0 ? inputQueue[inputQueue.length - 1] : direction;
+
+        // Guard: Prevent self-collisions from pressing opposite keys
+        if(targetDirection.x !== -lastQueuedDirection.x || targetDirection.y !== -lastQueuedDirection.y) {
+            // Bugger Cap: Only queue up to 2 moves max
+            if(inputQueue.length < 2) {
+                inputQueue.push(targetDirection);
+            }
         }
     }
 
@@ -63,7 +75,10 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
 
     // Core mechanics update logic
     function update() {
-        direction = nextDirection;
+        // Process the next move in the buffer queue
+        if(inputQueue.length > 0) {
+            direction = inputQueue.shift();
+        }
 
         // Calculate new head position
         const head = {
