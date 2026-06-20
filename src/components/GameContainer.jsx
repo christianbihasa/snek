@@ -7,7 +7,10 @@ import { initGame } from '../game/engine';
 export default function GameContainer() {
     const [gameState, setGameState] = useState('MENU'); // 'MENU', 'PLAYING', 'GAME OVER'
     const [score, setScore] = useState(0);
-    const [highScore, setHighScore] = useState(0);
+    const [highScore, setHighScore] = useState(() => {
+        const saved = localStorage.getItem('snekHighScore');
+        return saved ? parseInt(saved, 10) : 0;
+    });
     const gameRef = useRef(null);
 
     const canvasRef = useRef(null);
@@ -18,7 +21,18 @@ export default function GameContainer() {
         if(canvasRef.current) {
             // Pass states and handlers to the game engine
             gameEngineRef.current = initGame(canvasRef.current, {
-                onScoreChange: (newScore) => {setScore(newScore)},
+                onScoreChange: (newScore) => {
+                    setScore(newScore)
+
+                    setHighScore((currentHighScore) => {
+                        if(newScore > currentHighScore) {
+                            // Cache to browser storage to save on refresh
+                            localStorage.setItem('snekHighScore', newScore.toString());
+                            return newScore;
+                        }
+                        return currentHighScore;
+                    }
+                )},
                 onGameOver: () => { setGameState('GAME OVER') }
             });
         }
