@@ -8,8 +8,7 @@ export default function GameContainer() {
     const [gameState, setGameState] = useState('MENU'); // 'MENU', 'PLAYING', 'GAME OVER'
     const [score, setScore] = useState(0);
     const [highScore, setHighScore] = useState(() => {
-        const saved = localStorage.getItem('snekHighScore');
-        return saved ? parseInt(saved, 10) : 0;
+        return parseInt(localStorage.getItem('snekHighScore') || '0', 10)
     });
     const gameRef = useRef(null);
 
@@ -23,17 +22,19 @@ export default function GameContainer() {
             gameEngineRef.current = initGame(canvasRef.current, {
                 onScoreChange: (newScore) => {
                     setScore(newScore)
+                },
+                onGameOver: (finalScore) => { 
+                    setGameState('GAME OVER');
 
                     setHighScore((currentHighScore) => {
-                        if(newScore > currentHighScore) {
-                            // Cache to browser storage to save on refresh
-                            localStorage.setItem('snekHighScore', newScore.toString());
-                            return newScore;
+                        if(finalScore > currentHighScore) {
+                            // Cache to browser storage to save even on refresh
+                            localStorage.setItem('snekHighScore', finalScore.toString());
+                            return finalScore;
                         }
                         return currentHighScore;
-                    }
-                )},
-                onGameOver: () => { setGameState('GAME OVER') }
+                    });
+                }
             });
         }
 
@@ -77,7 +78,7 @@ export default function GameContainer() {
             {/* Responsive Footer Controls Prompt */}
             <p className="mt-4 text-xs text-slate-500 hidden md:block">Use WASD or Arrow Keys to move the snek.</p>
             <p className="mt-4 text-xs text-slate-500 md:hidden">Swipe anywhere on the screen to control the snek.</p>
-            
+
         </div>
     );
 }
