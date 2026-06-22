@@ -67,13 +67,13 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
         // Determine next direction
         const lastQueuedDirection = inputQueue.length > 0 ? inputQueue[inputQueue.length - 1] : direction;
 
-        // Guard: Prevent self-collisions from pressing opposite keys
-        if(targetDirection.x !== -lastQueuedDirection.x || targetDirection.y !== -lastQueuedDirection.y) {
-            // Bugger Cap: Only queue up to 2 moves max
-            if(inputQueue.length < 2) {
-                inputQueue.push(targetDirection);
-            }
+        const isOpposite = (targetDirection.x + lastQueuedDirection.x === 0) && (targetDirection.y + lastQueuedDirection.y === 0);
+
+        // Checks for illegal direction & Handles up to 2 max queued direction
+        if(!isOpposite && inputQueue.length < 2) {
+            inputQueue.push(targetDirection);
         }
+        
     }
 
     function handleTouchStart(e) {
@@ -108,16 +108,25 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
 
         // Queue up direction using same anti-reversal safety logic
         const lastQueuedDirection = inputQueue.length > 0 ? inputQueue[inputQueue.length - 1] : direction;
-        if(targetDirection && (targetDirection.x !== -lastQueuedDirection.x || targetDirection.y !== -lastQueuedDirection)) {
-            if(inputQueue.length < 2) {
-                inputQueue.push(targetDirection);
-            }
+        
+        const isOpposite = (targetDirection.x + lastQueuedDirection.x === 0) && (targetDirection.y + lastQueuedDirection.y === 0);
+
+        // Checks for illegal direction & Handles up to 2 max queued direction
+        if(!isOpposite && inputQueue.length < 2) {
+            inputQueue.push(targetDirection);
+        }
+    }
+
+    function handleTouchMove(e) {
+        if(isRunning) {
+            e.preventDefault();
         }
     }
 
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('touchstart', handleTouchStart, {passive: true});
     window.addEventListener('touchend', handleTouchEnd, {passive: true});
+    window.addEventListener('touchmove', handleTouchMove, {passive: false});
 
     // Core mechanics update logic
     function update() {
@@ -231,6 +240,7 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
             window.removeEventListener('keydown', handleKeyDown);
             window.addEventListener('touchstart', handleTouchStart, {passive: true});
             window.addEventListener('touchend', handleTouchEnd, {passive: true});
+            window.addEventListener('touchmove', handleTouchMove, {passive: false});
         }
     }
 }
