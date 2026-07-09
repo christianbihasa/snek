@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function GameHUD({ score, highScore }) {
+export default function GameHUD({ score, highScore, onOpenIntro }) {
   return (
     <div className="flex justify-between items-center w-full max-w-[600px] px-2 mb-3 font-mono select-none">
       {/* Current Score */}

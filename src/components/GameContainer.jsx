@@ -4,6 +4,7 @@ import GameHUD from './GameHUD';
 import GameOverModal from './GameOverModal';
 import { initGame } from '../game/engine';
 import ParticleBackground from './ParticleBackground';
+import IntroModal from './IntroModal';
 
 export default function GameContainer() {
     const [gameState, setGameState] = useState('MENU'); // 'MENU', 'PLAYING', 'GAME OVER'
@@ -11,10 +12,20 @@ export default function GameContainer() {
     const [highScore, setHighScore] = useState(() => {
         return parseInt(localStorage.getItem('snekHighScore') || '0', 10)
     });
+
+    const [showIntro, setShowIntro] = useState(() => {
+        return !localStorage.getItem('snekHasSeenIntro');
+    });
+
     const gameRef = useRef(null);
 
     const canvasRef = useRef(null);
     const gameEngineRef = useRef(null);
+
+    const handleCloseIntro = () => {
+        localStorage.setItem('snekHasSeenIntro', 'true');
+        setShowIntro(false);
+    }
 
     // Initialize/update game loop when state changes
     useEffect(() => {
@@ -56,10 +67,12 @@ export default function GameContainer() {
             {/* The background stays down at z-0 */}
             <ParticleBackground />
 
+            {showIntro && <IntroModal onClose={handleCloseIntro} />}
+
             <div className="relative z-10 flex flex-col items-center justify-center w-full">
                 
                 {/* Score & High Score */}
-                <GameHUD score={score} highScore={highScore} />
+                <GameHUD score={score} highScore={highScore} onOpenIntro={() => setShowIntro(true)} />
 
                 {/* Forces relative positioning and aspect ratio */}
                 <div className="relative w-full max-w-[600px] aspect-square rounded-2xl border-4 border-cyan-500/30 overflow-hidden shadow-[0_0_50px_rgba(6,182,212,0.15)] bg-slate-900/90">
