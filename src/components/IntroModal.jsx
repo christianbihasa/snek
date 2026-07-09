@@ -1,0 +1,72 @@
+import React from "react";
+
+export default function IntroModal({ onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-md bg-slate-900 border-2 border-cyan-500/50 rounded-2xl p-6 text-white shadow-[0_0_50px_rgba(6,182,212,0.25)] font-mono">
+        {/* Title Section */}
+        <div className="text-center mb-4">
+          <h2 className="text-2xl font-bold tracking-wider text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">
+            WELCOME TO SNEK 🐍
+          </h2>
+          <p className="text-[11px] text-slate-400 mt-1 uppercase tracking-widest">
+            Arcade Reimagined
+          </p>
+        </div>
+
+        {/* Content Section */}
+        <div className="space-y-4 text-xs leading-relaxed text-slate-300">
+          {/* Retro Reference */}
+          <p>
+            Inspired by the legendary{" "}
+            <strong className="text-cyan-300">Nokia Snake game (1997)</strong>,
+            this modern arcade edition brings high-framerate movement, glowing
+            particle background visual effects, and retro sound design straight
+            to your browser.
+          </p>
+
+          {/* How to Play Box */}
+          <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-2">
+            <p className="font-bold text-cyan-400 uppercase tracking-wide text-[10px]">
+              🎯 Objective:
+            </p>
+            <p>
+              Guide the snek to consume food pellets to grow longer and stack
+              your high score. Avoid crashing into the outer walls or your own
+              tail!
+            </p>
+          </div>
+
+          {/* Controls Grid */}
+          <div className="grid grid-cols-2 gap-2 text-[11px]">
+            <div className="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/50">
+              <span className="block font-bold text-slate-200 mb-0.5">
+                🖥️ Desktop
+              </span>
+              <span className="text-slate-400">WASD or Arrow Keys</span>
+            </div>
+            <div className="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/50">
+              <span className="block font-bold text-slate-200 mb-0.5">
+                📱 Mobile
+              </span>
+              <span className="text-slate-400">Swipe anywhere to turn</span>
+            </div>
+          </div>
+
+          <p className="text-[10px] text-slate-500 text-center italic">
+            Tip: You can reopen this guide anytime using the (?) button in the
+            header.
+          </p>
+        </div>
+
+        {/* Action Button */}
+        <button
+          onClick={onClose}
+          className="mt-6 w-full py-3 bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-slate-950 font-bold uppercase tracking-wider rounded-xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.4)] cursor-pointer"
+        >
+          LET'S PLAY!
+        </button>
+      </div>
+    </div>
+  );
+}
