@@ -1,13 +1,17 @@
 import {GRID_SIZE, SNAKE_SPEED} from './constants.js';
 
-export function initGame(canvas, {onScoreChange, onGameOver}) {
+export function initGame(canvas, {onScoreChange, onGameOver}, options = { speed: 1.0, foodCount: 1}) {
     const ctx = canvas.getContext('2d');
     let loopId = null;
     let lastUpdateTime = 0;
 
+    // Config options and calculated values
+    const { speed, foodCount } = options;
+    const currentSpeedInterval = SNAKE_SPEED / speed;
+
     // Game engine state variables
     let snake = [];
-    let food = {x: 0, y: 0};
+    let foods = [];
     let direction = {x: 1, y: 0};
     let inputQueue = [];
     let score = 0;
@@ -41,14 +45,14 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
     // Helper to get random coord on the grid
     const getRandomTile = () => Math.floor(Math.random() * GRID_SIZE);
 
-    function spawnFood() {
+    function spawnSingleFood() {
         let newFood;
         
         // Ensure food doesn't spawn inside the snake's body
-        while(!newFood || snake.some(segment => segment.x === newFood.x && segment.y === newFood.y)) {
+        while(!newFood || snake.some(segment => segment.x === newFood.x && segment.y === newFood.y) || foods.some(f => f.x === newFood.x && f.y === newFood.y)) {
             newFood = {x: getRandomTile(), y: getRandomTile()};
         }
-        food = newFood;
+        foods.push(newFood);
     }
 
     function resetState() {
@@ -61,7 +65,10 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
         inputQueue = [];
         score = 0;
         onScoreChange(0);
-        spawnFood();
+        foods = [];
+        for(let i = 0; i < foodCount; i++) {
+            spawnSingleFood();
+        }
     }
 
     // Keyboard event handler
@@ -177,7 +184,8 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
             playSFX(eatSound);
             score += 10;
             onScoreChange(score);
-            spawnFood();
+            foods.splice(foodIndex, 1);
+            spawnSingleFood();
         } else {
             // Pop tail to simulate forward movement
             snake.pop();
@@ -231,7 +239,7 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
         loopId = requestAnimationFrame(gameLoop);
 
         const elapsed = timestamp - lastUpdateTime;
-        if(elapsed > SNAKE_SPEED) {
+        if(elapsed > currentSpeedInterval) {
             lastUpdateTime = timestamp;
             update();
             draw();
@@ -255,9 +263,9 @@ export function initGame(canvas, {onScoreChange, onGameOver}) {
             isRunning = false;
             cancelAnimationFrame(loopId);
             window.removeEventListener('keydown', handleKeyDown);
-            window.addEventListener('touchstart', handleTouchStart, {passive: true});
-            window.addEventListener('touchend', handleTouchEnd, {passive: true});
-            window.addEventListener('touchmove', handleTouchMove, {passive: false});
+            window.addEventListener('touchstart', handleTouchStart);
+            window.addEventListener('touchend', handleTouchEnd);
+            window.addEventListener('touchmove', handleTouchMove);
         }
     }
 }
