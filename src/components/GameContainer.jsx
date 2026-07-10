@@ -5,6 +5,7 @@ import GameOverModal from './GameOverModal';
 import { initGame } from '../game/engine';
 import ParticleBackground from './ParticleBackground';
 import IntroModal from './IntroModal';
+import SettingsModal from './SettingsModal';
 
 export default function GameContainer() {
     const [gameState, setGameState] = useState('MENU'); // 'MENU', 'PLAYING', 'GAME OVER'
@@ -16,6 +17,10 @@ export default function GameContainer() {
     const [showIntro, setShowIntro] = useState(() => {
         return !localStorage.getItem('snekHasSeenIntro');
     });
+
+    // Modifiers state
+    const [showSettings, setShowSettings] = useState(false);
+    const [gameConfig, setGameConfig] = useState({ speed: 1.0, foodCount: 1 });
 
     const gameRef = useRef(null);
 
@@ -47,13 +52,13 @@ export default function GameContainer() {
                         return currentHighScore;
                     });
                 }
-            });
+            }, gameConfig);
         }
 
         return () => {
             if(gameEngineRef.current) gameEngineRef.current.destroy();
         };
-    }, []);
+    }, [gameConfig]);
 
     const handleStartGame = () => {
         setScore(0);
@@ -69,10 +74,23 @@ export default function GameContainer() {
 
             {showIntro && <IntroModal onClose={handleCloseIntro} />}
 
+            {/* Render settings overlay panel state check */}
+            {showSettings && (
+                <SettingsModal
+                    currentSpeed={gameConfig.speed}
+                    currentFoodCount={gameConfig.foodCount}
+                    onClose={() => setShowSettings(false)}
+                    onSave={(newSettings) => {
+                        setGameConfig(newSettings);
+                        setShowSettings(false);
+                    }}
+                />
+            )}
+
             <div className="relative z-10 flex flex-col items-center justify-center w-full">
                 
                 {/* Score & High Score */}
-                <GameHUD score={score} highScore={highScore} onOpenIntro={() => setShowIntro(true)} />
+                <GameHUD score={score} highScore={highScore} onOpenIntro={() => setShowIntro(true)} onOpenSettings={() => setShowSettings(true)} />
 
                 {/* Forces relative positioning and aspect ratio */}
                 <div className="relative w-full max-w-[600px] aspect-square rounded-2xl border-4 border-cyan-500/30 overflow-hidden shadow-[0_0_50px_rgba(6,182,212,0.15)] bg-slate-900/90">

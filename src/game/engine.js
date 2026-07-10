@@ -49,7 +49,9 @@ export function initGame(canvas, {onScoreChange, onGameOver}, options = { speed:
         let newFood;
         
         // Ensure food doesn't spawn inside the snake's body
-        while(!newFood || snake.some(segment => segment.x === newFood.x && segment.y === newFood.y) || foods.some(f => f.x === newFood.x && f.y === newFood.y)) {
+        while(!newFood || 
+              snake.some(segment => segment.x === newFood.x && segment.y === newFood.y) || 
+              foods.some(f => f.x === newFood.x && f.y === newFood.y)) {
             newFood = {x: getRandomTile(), y: getRandomTile()};
         }
         foods.push(newFood);
@@ -180,7 +182,8 @@ export function initGame(canvas, {onScoreChange, onGameOver}, options = { speed:
         snake.unshift(head);
 
         // (3) Mechanic check: Food consumption
-        if(head.x === food.x && head.y === food.y) {
+        const foodIndex = foods.findIndex(f => f.x === head.x && f.y === head.y);
+        if(foodIndex !== -1) {
             playSFX(eatSound);
             score += 10;
             onScoreChange(score);
@@ -206,13 +209,15 @@ export function initGame(canvas, {onScoreChange, onGameOver}, options = { speed:
         // Render food
         ctx.fillStyle = '#f43f5e';
         ctx.shadowColor = '#f43f5e';
-        ctx.beginPath();
-        ctx.arc(
-            food.x * tileW + tileW / 2,
-            food.y * tileH + tileH / 2,
-            tileW / 2.5, 0, Math.PI * 2
-        );
-        ctx.fill();
+        foods.forEach(foodItem => {
+            ctx.beginPath();
+            ctx.arc(
+                foodItem.x * tileW + tileW / 2,
+                foodItem.y * tileH + tileH / 2,
+                tileW / 2.5, 0, Math.PI * 2
+            );
+            ctx.fill();
+        });
 
         // Render Snake
         snake.forEach((segment, index) => {
@@ -263,9 +268,9 @@ export function initGame(canvas, {onScoreChange, onGameOver}, options = { speed:
             isRunning = false;
             cancelAnimationFrame(loopId);
             window.removeEventListener('keydown', handleKeyDown);
-            window.addEventListener('touchstart', handleTouchStart);
-            window.addEventListener('touchend', handleTouchEnd);
-            window.addEventListener('touchmove', handleTouchMove);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchend', handleTouchEnd);
+            window.removeEventListener('touchmove', handleTouchMove);
         }
     }
 }
