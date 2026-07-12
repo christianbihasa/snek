@@ -4,6 +4,7 @@ export default function IntroModal({ onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
       <div className="relative w-full max-w-md bg-slate-900 border-2 border-cyan-500/50 rounded-2xl p-6 text-white shadow-[0_0_50px_rgba(6,182,212,0.25)] font-mono transform transition-all animate-modal-enter">
+        
         {/* Top Right Close Button (X) */}
         <button
           onClick={onClose}
@@ -48,6 +49,24 @@ export default function IntroModal({ onClose }) {
             </p>
           </div>
 
+          {/* New Game Modifiers Section */}
+          <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-2">
+            <p className="font-bold text-cyan-400 uppercase tracking-wide text-[10px] flex items-center gap-1">
+              <span>⚙️</span> Custom Modifiers
+            </p>
+            <p className="text-slate-400 text-[11px] mb-1">
+              Customize your arcade runs using the gear icon in the header:
+            </p>
+            <ul className="list-disc pl-4 space-y-1 text-slate-400 text-[11px]">
+              <li>
+                <strong className="text-slate-200">Snake Speed:</strong> Speed up the movement for a chaotic challenge, or dial it back to practice routing.
+              </li>
+              <li>
+                <strong className="text-slate-200">Food Multiplier:</strong> Spawn multiple food pellets on the grid simultaneously to rack up points instantly.
+              </li>
+            </ul>
+          </div>
+
           {/* Controls Grid */}
           <div className="grid grid-cols-2 gap-2 text-[11px]">
             <div className="bg-slate-800/40 p-2.5 rounded-lg border border-slate-800">
@@ -65,7 +84,7 @@ export default function IntroModal({ onClose }) {
           </div>
 
           <p className="text-[10px] text-slate-500 text-center italic mt-2">
-            Tip: Reopen this guide anytime using the (?) button in the header.
+            Tip: Reopen this guide or tweak configurations anytime using the header options.
           </p>
         </div>
 
