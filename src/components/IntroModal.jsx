@@ -3,16 +3,27 @@ import React from "react";
 export default function IntroModal({ onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-md bg-slate-900 border-2 border-cyan-500/50 rounded-2xl p-6 text-white shadow-[0_0_50px_rgba(6,182,212,0.25)] font-mono">
+      <div className="relative w-full max-w-md bg-slate-900 border-2 border-cyan-500/50 rounded-2xl p-6 text-white shadow-[0_0_50px_rgba(6,182,212,0.25)] font-mono transform transition-all animate-modal-enter">
+        {/* Top Right Close Button (X) */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center rounded-full bg-slate-950/50 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-400/50 transition-colors cursor-pointer text-xs"
+          title="Close guide"
+        >
+          ✕
+        </button>
+
         {/* Title Section */}
-        <div className="text-center mb-4">
+        <div className="text-center mb-5 pr-4">
           <h2 className="text-2xl font-bold tracking-wider text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">
             WELCOME TO SNEK 🐍
           </h2>
-          <p className="text-[11px] text-slate-400 mt-1 uppercase tracking-widest">
+          <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">
             Arcade Reimagined
           </p>
         </div>
+
+        <hr className="border-slate-800/60 mb-4" />
 
         {/* Content Section */}
         <div className="space-y-4 text-xs leading-relaxed text-slate-300">
@@ -27,10 +38,10 @@ export default function IntroModal({ onClose }) {
 
           {/* How to Play Box */}
           <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-2">
-            <p className="font-bold text-cyan-400 uppercase tracking-wide text-[10px]">
-              🎯 Objective:
+            <p className="font-bold text-cyan-400 uppercase tracking-wide text-[10px] flex items-center gap-1">
+              <span>🎯</span> Objective
             </p>
-            <p>
+            <p className="text-slate-400 text-[11px]">
               Guide the snek to consume food pellets to grow longer and stack
               your high score. Avoid crashing into the outer walls or your own
               tail!
@@ -39,13 +50,13 @@ export default function IntroModal({ onClose }) {
 
           {/* Controls Grid */}
           <div className="grid grid-cols-2 gap-2 text-[11px]">
-            <div className="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/50">
+            <div className="bg-slate-800/40 p-2.5 rounded-lg border border-slate-800">
               <span className="block font-bold text-slate-200 mb-0.5">
                 🖥️ Desktop
               </span>
               <span className="text-slate-400">WASD or Arrow Keys</span>
             </div>
-            <div className="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/50">
+            <div className="bg-slate-800/40 p-2.5 rounded-lg border border-slate-800">
               <span className="block font-bold text-slate-200 mb-0.5">
                 📱 Mobile
               </span>
@@ -53,9 +64,8 @@ export default function IntroModal({ onClose }) {
             </div>
           </div>
 
-          <p className="text-[10px] text-slate-500 text-center italic">
-            Tip: You can reopen this guide anytime using the (?) button in the
-            header.
+          <p className="text-[10px] text-slate-500 text-center italic mt-2">
+            Tip: Reopen this guide anytime using the (?) button in the header.
           </p>
         </div>
 
