@@ -6,6 +6,7 @@ import { initGame } from '../game/engine';
 import ParticleBackground from './ParticleBackground';
 import IntroModal from './IntroModal';
 import SettingsModal from './SettingsModal';
+import { THEME_PRESETS } from '../game/themes';
 
 export default function GameContainer() {
     const [gameState, setGameState] = useState('MENU'); // 'MENU', 'PLAYING', 'GAME OVER'
@@ -20,7 +21,8 @@ export default function GameContainer() {
 
     // Modifiers state
     const [showSettings, setShowSettings] = useState(false);
-    const [gameConfig, setGameConfig] = useState({ speed: 1.0, foodCount: 1 });
+    const [gameConfig, setGameConfig] = useState({ speed: 1.0, foodCount: 1, theme: 'CYBERPUNK' });
+
 
     const gameRef = useRef(null);
 
@@ -79,6 +81,7 @@ export default function GameContainer() {
                 <SettingsModal
                     currentSpeed={gameConfig.speed}
                     currentFoodCount={gameConfig.foodCount}
+                    currentTheme={gameConfig.theme}
                     onClose={() => setShowSettings(false)}
                     onSave={(newSettings) => {
                         setGameConfig(newSettings);

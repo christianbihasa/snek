@@ -1,13 +1,16 @@
-import {GRID_SIZE, SNAKE_SPEED} from './constants.js';
+import { GRID_SIZE, SNAKE_SPEED } from './constants.js';
+import { THEME_PRESETS } from './themes.js';
 
-export function initGame(canvas, {onScoreChange, onGameOver}, options = { speed: 1.0, foodCount: 1}) {
+export function initGame(canvas, {onScoreChange, onGameOver}, options = { speed: 1.0, foodCount: 1, theme: 'CYBERPUNK' }) {
     const ctx = canvas.getContext('2d');
     let loopId = null;
     let lastUpdateTime = 0;
 
     // Config options and calculated values
-    const { speed, foodCount } = options;
+    const { speed, foodCount, theme } = options;
     const currentSpeedInterval = SNAKE_SPEED / speed;
+
+    const colors = THEME_PRESETS[theme] || THEME_PRESETS.CYBERPUNK;
 
     // Game engine state variables
     let snake = [];
@@ -200,15 +203,15 @@ export function initGame(canvas, {onScoreChange, onGameOver}, options = { speed:
         const tileH = canvas.height / GRID_SIZE;
 
         // Clear previous frames
-        ctx.fillStyle = '#0f172a';
+        ctx.fillStyle = colors.bg;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Added vfx
         ctx.shadowBlur = 12;
 
         // Render food
-        ctx.fillStyle = '#f43f5e';
-        ctx.shadowColor = '#f43f5e';
+        ctx.fillStyle = colors.food;
+        ctx.shadowColor = colors.food;
         foods.forEach(foodItem => {
             ctx.beginPath();
             ctx.arc(
@@ -222,8 +225,8 @@ export function initGame(canvas, {onScoreChange, onGameOver}, options = { speed:
         // Render Snake
         snake.forEach((segment, index) => {
             // Head
-            ctx.fillStyle = index === 0 ? '#22d3ee' : '#0d9488';
-            ctx.shadowColor = index === 0 ? '#22d3ee' : '#0d9488';
+            ctx.fillStyle = index === 0 ? colors.head : colors.body;
+            ctx.shadowColor = index === 0 ? colors.head : colors.body;
 
             ctx.fillRect(
                 segment.x * tileW + 1,

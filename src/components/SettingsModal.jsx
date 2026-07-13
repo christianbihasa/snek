@@ -1,21 +1,22 @@
 import React, { useState } from "react";
+import { THEME_PRESETS } from "../game/themes";
 
 export default function SettingsModal({
   currentSpeed,
   currentFoodCount,
+  currentTheme,
   onSave,
   onClose,
 }) {
   const [speed, setSpeed] = useState(currentSpeed);
   const [foodCount, setFoodCount] = useState(currentFoodCount);
+  const [theme, setTheme] = useState(currentTheme || "CYBERPUNK");
 
   const handleSpeedChange = (val) => {
     let num = parseFloat(val);
     if (isNaN(num)) num = 1.0;
-    // Clamp bounds securely
     if (num < 1.0) num = 1.0;
     if (num > 5.0) num = 5.0;
-    // Lock to 1 decimal place
     setSpeed(Math.round(num * 10) / 10);
   };
 
@@ -29,7 +30,7 @@ export default function SettingsModal({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ speed, foodCount });
+    onSave({ speed, foodCount, theme });
   };
 
   return (
@@ -96,18 +97,68 @@ export default function SettingsModal({
             </div>
           </div>
 
+          {/* Theme Selection Grid */}
+          <div className="space-y-2">
+            <label className="text-xs uppercase tracking-wider text-slate-400 block">
+              Color Theme Presets
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {Object.entries(THEME_PRESETS).map(([key, value]) => {
+                const isSelected = theme === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setTheme(key)}
+                    className={`p-2.5 text-left rounded-xl border transition-all flex flex-col gap-1.5 cursor-pointer ${
+                      isSelected
+                        ? "border-cyan-400 bg-slate-950/90 shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+                        : "border-slate-800 bg-slate-950/40 hover:border-slate-700"
+                    }`}
+                  >
+                    <span
+                      className={`text-[11px] font-bold ${isSelected ? "text-cyan-400" : "text-slate-300"}`}
+                    >
+                      {value.name}
+                    </span>
+
+                    {/* Compact Color Swatch Bar */}
+                    <div className="flex w-full h-2.5 rounded-sm overflow-hidden border border-slate-950">
+                      <div
+                        className="w-[35%] h-full"
+                        style={{ backgroundColor: value.bg }}
+                      />
+                      <div
+                        className="w-[15%] h-full"
+                        style={{ backgroundColor: value.head }}
+                      />
+                      <div
+                        className="w-[15%] h-full"
+                        style={{ backgroundColor: value.body }}
+                      />
+                      <div
+                        className="w-[35%] h-full"
+                        style={{ backgroundColor: value.food }}
+                      />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Action controls */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="w-1/2 py-2.5 border border-slate-700 text-slate-400 font-bold uppercase rounded-xl hover:text-white transition-colors cursor-pointer"
+              className="w-1/2 py-2.5 border border-slate-700 text-slate-400 font-bold uppercase rounded-xl hover:text-white transition-colors cursor-pointer text-xs"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="w-1/2 py-2.5 bg-cyan-500 text-slate-950 font-bold uppercase rounded-xl hover:bg-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all cursor-pointer"
+              className="w-1/2 py-2.5 bg-cyan-500 text-slate-950 font-bold uppercase rounded-xl hover:bg-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all cursor-pointer text-xs"
             >
               Apply
             </button>
