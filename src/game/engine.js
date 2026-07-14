@@ -7,10 +7,10 @@ export function initGame(canvas, {onScoreChange, onGameOver}, options = { speed:
     let lastUpdateTime = 0;
 
     // Config options and calculated values
-    const { speed, foodCount, theme } = options;
+    const { speed, foodCount, theme, customColors } = options;
     const currentSpeedInterval = SNAKE_SPEED / speed;
 
-    const colors = THEME_PRESETS[theme] || THEME_PRESETS.CYBERPUNK;
+    const colors = theme === 'CUSTOM' && customColors ? customColors : (THEME_PRESETS[theme] || THEME_PRESETS.CYBERPUNK);
 
     // Game engine state variables
     let snake = [];
