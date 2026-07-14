@@ -4,7 +4,6 @@ export default function IntroModal({ onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
       <div className="relative w-full max-w-md bg-slate-900 border-2 border-cyan-500/50 rounded-2xl p-6 text-white shadow-[0_0_50px_rgba(6,182,212,0.25)] font-mono transform transition-all animate-modal-enter">
-        
         {/* Top Right Close Button (X) */}
         <button
           onClick={onClose}
@@ -49,7 +48,7 @@ export default function IntroModal({ onClose }) {
             </p>
           </div>
 
-          {/* New Game Modifiers Section */}
+          {/* Game Modifiers Section */}
           <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-2">
             <p className="font-bold text-cyan-400 uppercase tracking-wide text-[10px] flex items-center gap-1">
               <span>⚙️</span> Custom Modifiers
@@ -59,10 +58,19 @@ export default function IntroModal({ onClose }) {
             </p>
             <ul className="list-disc pl-4 space-y-1 text-slate-400 text-[11px]">
               <li>
-                <strong className="text-slate-200">Snake Speed:</strong> Speed up the movement for a chaotic challenge, or dial it back to practice routing.
+                <strong className="text-slate-200">Snake Speed:</strong> Speed
+                up the movement for a chaotic challenge, or dial it back to
+                practice routing.
               </li>
               <li>
-                <strong className="text-slate-200">Food Multiplier:</strong> Spawn multiple food pellets on the grid simultaneously to rack up points instantly.
+                <strong className="text-slate-200">Food Multiplier:</strong>{" "}
+                Spawn multiple food pellets on the grid simultaneously to rack
+                up points instantly.
+              </li>
+              <li>
+                <strong className="text-slate-200">Color Canvas:</strong> Swap
+                visual presets on the fly, or build a personalized grid from
+                scratch in the <strong>DIY Sandbox Editor</strong>.
               </li>
             </ul>
           </div>
@@ -84,7 +92,8 @@ export default function IntroModal({ onClose }) {
           </div>
 
           <p className="text-[10px] text-slate-500 text-center italic mt-2">
-            Tip: Reopen this guide or tweak configurations anytime using the header options.
+            Tip: Reopen this guide or tweak configurations anytime using the
+            header options.
           </p>
         </div>
 
