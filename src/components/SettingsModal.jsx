@@ -5,17 +5,30 @@ export default function SettingsModal({
   currentSpeed,
   currentFoodCount,
   currentTheme,
+  currentCustomColors,
   onSave,
   onClose,
 }) {
   const [speed, setSpeed] = useState(currentSpeed);
   const [foodCount, setFoodCount] = useState(currentFoodCount);
-  const [theme, setTheme] = useState(currentTheme || 'CYBERPUNK');
-  
-  // Track hovered theme to make selection feel incredibly dynamic and organic
+  const [theme, setTheme] = useState(currentTheme || "CYBERPUNK");
+  const [customColors, setCustomColors] = useState(
+    currentCustomColors || {
+      bg: "#1e152a",
+      head: "#a855f7",
+      body: "#6b21a8",
+      food: "#eab308",
+    },
+  );
+
   const [hoveredTheme, setHoveredTheme] = useState(null);
+
+  // Resolve active theme preview logic to support custom user sandboxes
   const activePreviewTheme = hoveredTheme || theme;
-  const previewColors = THEME_PRESETS[activePreviewTheme] || THEME_PRESETS.CYBERPUNK;
+  const previewColors =
+    activePreviewTheme === "CUSTOM"
+      ? customColors
+      : THEME_PRESETS[activePreviewTheme] || THEME_PRESETS.CYBERPUNK;
 
   const handleSpeedChange = (val) => {
     let num = parseFloat(val);
@@ -33,16 +46,22 @@ export default function SettingsModal({
     setFoodCount(num);
   };
 
+  const handleCustomColorChange = (key, val) => {
+    setCustomColors((prev) => ({
+      ...prev,
+      [key]: val,
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ speed, foodCount, theme });
+    // Pass customColors up so the state persists in the main game container
+    onSave({ speed, foodCount, theme, customColors });
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-mono">
-      {/* Container expanded from max-w-md to max-w-2xl to fit the side-by-side preview panel */}
       <div className="w-full max-w-2xl bg-slate-900 border-2 border-cyan-500/50 rounded-2xl p-6 text-white shadow-[0_0_50px_rgba(6,182,212,0.25)] grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-        
         {/* LEFT COLUMN: Input Form Controls */}
         <div className="flex flex-col justify-between h-full">
           <div>
@@ -50,7 +69,7 @@ export default function SettingsModal({
               Modifiers
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Speed config */}
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-wider text-slate-400 block">
@@ -128,22 +147,131 @@ export default function SettingsModal({
                             : "border-slate-800 bg-slate-950/40 hover:border-slate-700"
                         }`}
                       >
-                        <span className={`text-[11px] font-bold ${isSelected ? "text-cyan-400" : "text-slate-300"}`}>
+                        <span
+                          className={`text-[11px] font-bold ${isSelected ? "text-cyan-400" : "text-slate-300"}`}
+                        >
                           {value.name}
                         </span>
-                        
+
                         {/* Compact Color Swatch Bar */}
                         <div className="flex w-full h-2 rounded-sm overflow-hidden border border-slate-950">
-                          <div className="w-[35%] h-full" style={{ backgroundColor: value.bg }} />
-                          <div className="w-[15%] h-full" style={{ backgroundColor: value.head }} />
-                          <div className="w-[15%] h-full" style={{ backgroundColor: value.body }} />
-                          <div className="w-[35%] h-full" style={{ backgroundColor: value.food }} />
+                          <div
+                            className="w-[35%] h-full"
+                            style={{ backgroundColor: value.bg }}
+                          />
+                          <div
+                            className="w-[15%] h-full"
+                            style={{ backgroundColor: value.head }}
+                          />
+                          <div
+                            className="w-[15%] h-full"
+                            style={{ backgroundColor: value.body }}
+                          />
+                          <div
+                            className="w-[35%] h-full"
+                            style={{ backgroundColor: value.food }}
+                          />
                         </div>
                       </button>
                     );
                   })}
+
+                  {/* Manual Sandbox Custom Color Option */}
+                  <button
+                    type="button"
+                    onClick={() => setTheme("CUSTOM")}
+                    onMouseEnter={() => setHoveredTheme("CUSTOM")}
+                    onMouseLeave={() => setHoveredTheme(null)}
+                    className={`p-2.5 text-left rounded-xl border transition-all flex flex-col gap-1.5 cursor-pointer ${
+                      theme === "CUSTOM"
+                        ? "border-purple-500 bg-slate-950/90 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
+                        : "border-slate-800 bg-slate-950/40 hover:border-slate-700"
+                    }`}
+                  >
+                    <span
+                      className={`text-[11px] font-bold ${theme === "CUSTOM" ? "text-purple-400" : "text-slate-300"}`}
+                    >
+                      🛠️ Custom Theme
+                    </span>
+                    <div className="flex w-full h-2 rounded-sm overflow-hidden border border-slate-950">
+                      <div
+                        className="w-[35%] h-full"
+                        style={{ backgroundColor: customColors.bg }}
+                      />
+                      <div
+                        className="w-[15%] h-full"
+                        style={{ backgroundColor: customColors.head }}
+                      />
+                      <div
+                        className="w-[15%] h-full"
+                        style={{ backgroundColor: customColors.body }}
+                      />
+                      <div
+                        className="w-[35%] h-full"
+                        style={{ backgroundColor: customColors.food }}
+                      />
+                    </div>
+                  </button>
                 </div>
               </div>
+
+              {/* Dynamic Sandbox Panel Color Pickers */}
+              {theme === "CUSTOM" && (
+                <div className="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl grid grid-cols-2 gap-2 text-[10px] animate-fade-in">
+                  <div className="flex items-center justify-between bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                    <span className="text-slate-400 uppercase tracking-wide">
+                      Arena BG
+                    </span>
+                    <input
+                      type="color"
+                      value={customColors.bg}
+                      onChange={(e) =>
+                        handleCustomColorChange("bg", e.target.value)
+                      }
+                      className="w-5 h-5 rounded border-0 bg-transparent cursor-pointer block"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                    <span className="text-slate-400 uppercase tracking-wide">
+                      Snek Head
+                    </span>
+                    <input
+                      type="color"
+                      value={customColors.head}
+                      onChange={(e) =>
+                        handleCustomColorChange("head", e.target.value)
+                      }
+                      className="w-5 h-5 rounded border-0 bg-transparent cursor-pointer block"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                    <span className="text-slate-400 uppercase tracking-wide">
+                      Snek Body
+                    </span>
+                    <input
+                      type="color"
+                      value={customColors.body}
+                      onChange={(e) =>
+                        handleCustomColorChange("body", e.target.value)
+                      }
+                      className="w-5 h-5 rounded border-0 bg-transparent cursor-pointer block"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                    <span className="text-slate-400 uppercase tracking-wide">
+                      Pellets
+                    </span>
+                    <input
+                      type="color"
+                      value={customColors.food}
+                      onChange={(e) =>
+                        handleCustomColorChange("food", e.target.value)
+                      }
+                      className="w-5 h-5 rounded border-0 bg-transparent cursor-pointer block"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Form Actions */}
               <div className="flex gap-3 pt-2">
@@ -174,9 +302,9 @@ export default function SettingsModal({
           {/* Simulated Retro Square Game Arena */}
           <div
             className="w-44 h-44 rounded-xl border-4 relative transition-colors duration-300 flex items-center justify-center overflow-hidden shadow-inner"
-            style={{ 
+            style={{
               backgroundColor: previewColors.bg,
-              borderColor: `${previewColors.head}40` // Adds 25% alpha opacity to the frame
+              borderColor: `${previewColors.head}40`, // Adds 25% alpha opacity to the frame
             }}
           >
             {/* Grid Pattern Mesh Background */}
@@ -184,33 +312,43 @@ export default function SettingsModal({
 
             {/* Simulated Snake Segment Body Chain */}
             <div className="absolute top-[40px] left-[28px] flex gap-[2px]">
-              <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: previewColors.body }} />
-              <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: previewColors.body }} />
-              <div 
-                className="w-3.5 h-3.5 rounded-sm transition-all duration-300" 
-                style={{ 
+              <div
+                className="w-3.5 h-3.5 rounded-sm transition-colors duration-300"
+                style={{ backgroundColor: previewColors.body }}
+              />
+              <div
+                className="w-3.5 h-3.5 rounded-sm transition-colors duration-300"
+                style={{ backgroundColor: previewColors.body }}
+              />
+              <div
+                className="w-3.5 h-3.5 rounded-sm transition-all duration-300"
+                style={{
                   backgroundColor: previewColors.head,
-                  boxShadow: `0 0 10px ${previewColors.head}` 
-                }} 
+                  boxShadow: `0 0 10px ${previewColors.head}`,
+                }}
               />
             </div>
 
             {/* Simulated Target Food Spawns */}
-            <div 
-              className="w-3 h-3 rounded-full absolute bottom-[45px] right-[45px] transition-all duration-300 animate-pulse" 
-              style={{ 
+            <div
+              className="w-3 h-3 rounded-full absolute bottom-[45px] right-[45px] transition-all duration-300 animate-pulse"
+              style={{
                 backgroundColor: previewColors.food,
-                boxShadow: `0 0 12px ${previewColors.food}`
-              }} 
+                boxShadow: `0 0 12px ${previewColors.food}`,
+              }}
             />
           </div>
 
           {/* Active Preset Metadata Footer */}
           <span className="text-[10px] text-slate-400 mt-4 uppercase tracking-wider">
-            Palette: <strong style={{ color: previewColors.head }}>{THEME_PRESETS[activePreviewTheme].name}</strong>
+            Palette:{" "}
+            <strong style={{ color: previewColors.head }}>
+              {activePreviewTheme === "CUSTOM"
+                ? "Custom Theme"
+                : THEME_PRESETS[activePreviewTheme]?.name || "Cyberpunk"}
+            </strong>
           </span>
         </div>
-
       </div>
     </div>
   );
